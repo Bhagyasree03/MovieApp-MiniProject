@@ -1,4 +1,5 @@
 import {Component} from 'react'
+import Cookies from 'js-cookie'
 import './login.css'
 
 class Login extends Component {
@@ -6,6 +7,7 @@ class Login extends Component {
     username: '',
     password: '',
     errorMsg: '',
+    showSubmitError: false,
   }
 
   onChangeUsername = event => {
@@ -16,12 +18,14 @@ class Login extends Component {
     this.setState({password: event.target.value})
   }
 
-  onSucess = token => {
-    console.log(token)
+  onSuccess = jwtToken => {
+    const {history} = this.props
+    Cookies.set('jwt_token', jwtToken, {expires: 30})
+    history.replace('/')
   }
 
   onError = error => {
-    this.setState({errorMsg: error})
+    this.setState({showSubmitError: true, errorMsg: error})
     console.log(error)
   }
 
@@ -38,14 +42,14 @@ class Login extends Component {
     const data = await response.json()
     // console.log(data)
     if (response.ok === true) {
-      this.onSucess(data.jwt_token)
+      this.onSuccess(data.jwt_token)
     } else {
       this.onError(data.error_msg)
     }
   }
 
   render() {
-    const {username, password, errorMsg} = this.state
+    const {username, password, showSubmitError, errorMsg} = this.state
 
     return (
       <div className="bg-login">
@@ -76,7 +80,7 @@ class Login extends Component {
               value={password}
             />
           </div>
-          <p className="invalid-text">{errorMsg}</p>
+          {showSubmitError && <p className="invalid-text">{errorMsg}</p>}
           <button type="submit" className="login-button">
             Login
           </button>
