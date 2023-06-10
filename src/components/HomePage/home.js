@@ -1,6 +1,7 @@
-import './home.css'
-import Cookies from 'js-cookie'
 import {Component} from 'react'
+import Cookies from 'js-cookie'
+import Header from '../Header/header'
+import './home.css'
 
 const apiStatusConstants = {
   initial: 'INITIAL',
@@ -11,15 +12,46 @@ const apiStatusConstants = {
 
 class Home extends Component {
   state = {
-    apiStatus: apiStatusConstants.initial,
+    trendingApiStatus: apiStatusConstants.initial,
+    OriginalApiStatus: apiStatusConstants.initial,
+    trendingList: [],
+    originalList: [],
+    randomMovie: {},
   }
 
   componentDidMount() {
-    this.getMoviesList()
+    this.getTrendingMoviesList()
+    this.getOriginalMoviesList()
   }
 
-  getMoviesList = async () => {
-    this.setState({apiStatus: apiStatusConstants.inProgress})
+  getOriginalMoviesList = async () => {
+    this.setState({originalApiStatus: apiStatusConstants.inProgress})
+    const url = 'https://apis.ccbp.in/movies-app/originals'
+    const jwtToken = Cookies.get('jwt_token')
+    const options = {
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+      method: 'GET',
+    }
+    const response = await fetch(url, options)
+    console.log(response)
+    if (response.ok) {
+      const data = await response.json()
+      console.log(data)
+      const randomMovieIndex = Math.floor(Math.random() * data.results.length)
+      this.setState({
+        originalApiStatus: apiStatusConstants.success,
+        originalList: data.results,
+        randomMovie: data.results[randomMovieIndex],
+      })
+    } else {
+      this.setState({originalApiStatus: apiStatusConstants.failure})
+    }
+  }
+
+  getTrendingMoviesList = async () => {
+    this.setState({trendingApiStatus: apiStatusConstants.inProgress})
     const url = 'https://apis.ccbp.in/movies-app/trending-movies'
     const jwtToken = Cookies.get('jwt_token')
     const options = {
@@ -30,13 +62,26 @@ class Home extends Component {
     }
     const response = await fetch(url, options)
     console.log(response)
+    if (response.ok) {
+      const data = await response.json()
+      console.log(data)
+      this.setState({
+        trendingApiStatus: apiStatusConstants.success,
+        trendingList: data.results,
+      })
+    } else {
+      this.setState({
+        trendingApiStatus: apiStatusConstants.failure,
+      })
+    }
   }
 
   render() {
     return (
-      <div>
-        <h1>Home</h1>
-      </div>
+      <>
+        <Header />
+        <div className="home-page">Hello</div>
+      </>
     )
   }
 }

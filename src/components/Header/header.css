@@ -1,0 +1,44 @@
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  height: 10vh;
+  background: #131313;
+  opacity: 0.7;
+}
+
+.top-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.movies-img {
+  margin: 10px;
+  padding-left: 20px;
+}
+.heading {
+  font-size: 28px;
+  font-family: 'HK Grotesk';
+  color: #e50014;
+  position: absolute;
+  left: 165px;
+  top: 48px;
+}
+.header-text {
+  font-family: HK Grotesk;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 26px;
+  letter-spacing: -0.35555556416511536px;
+  text-align: left;
+}
+.search-icon {
+  height: 20%;
+  weight: 20%;
+  background-color: transparent;
+}
+.icon {
+  height: 20%;
+  weight: 20%;
+  padding-right: 10px;
+}
